@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Password kìa bè🤣</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Patrick Hand", cursive;
+        background-color: #ffd1dc; /* Pastel pink background */
+        overflow: hidden; /* Prevent page scrolling */
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1; /* Place canvas behind */
+      }
+      .input-effect {
+        transition: all 0.3s ease-in-out;
+      }
+      .input-effect:focus {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      .button-effect {
+        transition: all 0.3s ease-in-out;
+      }
+      .button-effect:active {
+        transform: scale(0.95);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      @media (max-width: 600px) {
+        body {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .input-effect {
+          width: 80%;
+        }
+
+        button {
+          width: 80%;
+          margin: 10px 0;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+
+        canvas {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .input-effect {
+          width: 70%;
+        }
+
+        button {
+          width: 70%;
+        }
+
+        h1 {
+          font-size: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center min-h-screen">
+    <canvas
+      id="c"
+      width="window.innerWidth"
+      height="window.innerHeight"
+    ></canvas>
+    <div class="text-center">
+      <div
+        class="shadow-lg rounded-lg p-10 inline-block max-w-md w-full md:max-w-none md:w-auto bg-transparent"
+      >
+        <h1 class="text-4xl mb-8">Nhập pass đi người đẹp</h1>
+        <div class="flex flex-col md:flex-row items-center mb-8">
+          <img
+            alt="A cute blue cat with three yellow chicks"
+            class="w-48 h-48 mb-6 md:mb-0 md:w-64 md:h-64 md:mr-8"
+            height="256"
+            src="./gif/bubu-dudu-sseeyall.gif"
+            width="256"
+          />
+          <div class="grid grid-cols-3 gap-4 w-full">
+            <div class="col-span-3 mb-4">
+              <input
+                class="w-full border border-gray-400 rounded p-3 text-center text-2xl input-effect bg-transparent placeholder-gray-500"
+                id="password"
+                maxlength="8"
+                placeholder="Enter password"
+                type="password"
+                oninput="handleInput()"
+              />
+            </div>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(1)"
+            >
+              1
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(2)"
+            >
+              2
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(3)"
+            >
+              3
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(4)"
+            >
+              4
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(5)"
+            >
+              5
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(6)"
+            >
+              6
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(7)"
+            >
+              7
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(8)"
+            >
+              8
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="appendNumber(9)"
+            >
+              9
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl col-span-2 button-effect"
+              onclick="appendNumber(0)"
+            >
+              0
+            </button>
+            <button
+              class="border border-gray-400 rounded p-4 text-2xl button-effect"
+              onclick="deleteLastNumber()"
+            >
+              x
+            </button>
+          </div>
+        </div>
+        <div id="message" class="text-red-500 mt-6 text-2xl"></div>
+      </div>
+    </div>
+
+    <audio id="background-music" loop>
+      <source src="./mp3/Tranbonho.mp3" type="audio/mpeg" />
+      Trình duyệt của bạn không hỗ trợ thẻ audio.
+    </audio>
+
+    <script>
+      let attempts = 3;
+      const correctPassword = "10102024";
+      let enteredPassword = "";
+      let musicPlayed = false;
+
+      function appendNumber(number) {
+        if (enteredPassword.length < 8) {
+          enteredPassword += number;
+          const input = document.getElementById("password");
+          input.value += "*";
+          input.classList.add("input-effect");
+          setTimeout(() => {
+            input.classList.remove("input-effect");
+          }, 300);
+        }
+        checkPassword();
+      }
+
+      function handleInput() {
+        const input = document.getElementById("password");
+        enteredPassword = input.value.replace(/\*/g, "");
+        if (enteredPassword.length > 8) {
+          enteredPassword = enteredPassword.slice(0, 8);
+          input.value = input.value.slice(0, 8).replace(/./g, "*");
+        }
+        checkPassword();
+      }
+
+      function checkPassword() {
+        const message = document.getElementById("message");
+        if (enteredPassword.length === 8) {
+          if (enteredPassword === correctPassword) {
+            message.textContent = "Đúng rồi đó cưng, giỏi!😻";
+            message.classList.remove("text-red-500");
+            message.classList.add("text-green-500");
+            sessionStorage.setItem("authenticated", "true");
+            setTimeout(() => {
+              window.location.href = "demngayyeu.html";
+            }, 1000);
+          } else {
+            attempts--;
+            if (attempts > 0) {
+              message.textContent = `Sai rồi kìa🤡. Còn ${attempts} lần đó nhập lại đi😝`;
+            } else {
+              message.textContent = "Hết lượt rồi cưng load lại đi🤪";
+              disableButtons();
+            }
+            // Xóa nội dung đã nhập
+            enteredPassword = "";
+            const input = document.getElementById("password");
+            input.value = "";
+          }
+        }
+      }
+
+      function deleteLastNumber() {
+        const input = document.getElementById("password");
+        if (enteredPassword.length > 0) {
+          enteredPassword = enteredPassword.slice(0, -1);
+          input.value = input.value.slice(0, -1);
+        }
+      }
+      function disableButtons() {
+        const buttons = document.querySelectorAll("button");
+        buttons.forEach((button) => {
+          button.disabled = true;
+          button.classList.add("opacity-50", "cursor-not-allowed");
+        });
+      }
+
+      // Heart animation effect
+      var c = document.getElementById("c");
+      var ctx = c.getContext("2d");
+      var cw = (c.width = window.innerWidth),
+        ch = (c.height = window.innerHeight);
+      var rad = Math.PI / 180;
+      var howMany = 100;
+      var Circles = [];
+      ctx.strokeStyle = "red";
+      ctx.fillStyle = "rgba(255, 234, 234, 0.59)";
+      ctx.globalAlpha = 0.75;
+
+      function Circle() {
+        this.R = randomIntFromInterval(50, 200);
+        this.X = randomIntFromInterval(this.R, cw - this.R);
+        this.Y = randomIntFromInterval(this.R, ch - this.R);
+        this.iX = 2 * Math.random() * (Math.random() < 0.5 ? -1 : 1);
+        this.iY = 2 * Math.random() * (Math.random() < 0.5 ? -1 : 1);
+        this.r = randomIntFromInterval(5, 50);
+        this.r1 = randomIntFromInterval(this.R / 2, this.R);
+        this.a = ~~(Math.random() * 360) + 1;
+        this.x = this.X + this.r1 * Math.cos(this.a * rad);
+        this.y = this.Y + this.r1 * Math.sin(this.a * rad);
+        this.l = randomIntFromInterval(50, 80);
+      }
+
+      for (var i = 0; i < howMany; i++) {
+        var circle = new Circle();
+        Circles.push(circle);
+      }
+
+      function Draw() {
+        ctx.fillRect(0, 0, cw, ch);
+        for (var i = 0; i < Circles.length; i++) {
+          var p = Circles[i];
+          if (p.X < p.R || p.X > cw - p.R || p.Y < p.R || p.Y > ch - p.R) {
+            p.iX *= -1;
+            p.iY *= -1;
+          }
+          p.X += p.iX;
+          p.Y += p.iY;
+          p.a += 1;
+          p.x = p.X + p.r1 * Math.cos(p.a * rad);
+          p.y = p.Y + p.r1 * Math.sin(p.a * rad);
+          p.gx = p.x + p.r * Math.cos(p.a * rad);
+          p.gy = p.y + p.r * Math.sin(p.a * rad);
+          ctx.save();
+          ctx.fillStyle = Grd(p.gx, p.gy, p.r, p.l);
+          heart(p.x, p.y, p.r, p.a);
+          ctx.restore();
+        }
+        requestId = window.requestAnimationFrame(Draw);
+      }
+
+      function randomIntFromInterval(mn, mx) {
+        return ~~(Math.random() * (mx - mn + 1) + mn);
+      }
+
+      function Grd(x, y, r, l) {
+        grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+        grd.addColorStop(0, "hsla(0, 99%," + l + "%,.9)");
+        grd.addColorStop(1, "hsla(0, 99%," + l + "%, 0.1)");
+        return grd;
+      }
+
+      function heart(x, y, r, a) {
+        ctx.beginPath();
+        var x1 = x + r * Math.cos(a * rad);
+        var y1 = y + r * Math.sin(a * rad);
+        var cx1 = x + r * Math.cos((a + 22.5) * rad);
+        var cy1 = y + r * Math.sin((a + 22.5) * rad);
+        var cx2 = x + r * Math.cos((a - 22.5) * rad);
+        var cy2 = y + r * Math.sin((a - 22.5) * rad);
+        var chord = 2 * r * Math.sin((22.5 * rad) / 2);
+        ctx.moveTo(x1, y1);
+        ctx.arc(cx1, cy1, chord, (270 + a) * rad, (270 + a + 225) * rad);
+        ctx.lineTo(x, y);
+        ctx.moveTo(x1, y1);
+        ctx.arc(cx2, cy2, chord, (90 + a) * rad, (90 + a + 135) * rad, true);
+        ctx.lineTo(x, y);
+        ctx.fill();
+      }
+
+      // Add click event to play music
+      window.addEventListener(
+        "click",
+        function () {
+          if (!musicPlayed) {
+            const music = document.getElementById("background-music");
+            music.play().catch((error) => {
+              console.log("Error playing music:", error);
+            });
+            musicPlayed = true;
+          }
+        },
+        false
+      );
+
+      window.addEventListener("load", Draw, false);
+
+      // Reload the page when the user navigates back to this page
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          location.reload();
+        }
+      });
+    </script>
+  </body>
+</html>
